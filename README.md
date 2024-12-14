@@ -45,9 +45,7 @@ uvicorn main:app --reload
 ```
 
 The service will be available at `http://127.0.0.1:8000`.
+API docs http://127.0.0.1:8000/docs in swagger UI
 
 ## API Documentation
 For detailed API documentation, refer to the [API-docs.md](./API-docs.md) file.
-
-## Contact
-For any questions or issues, please contact support at support@example.com.
