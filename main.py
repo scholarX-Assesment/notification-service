@@ -5,7 +5,7 @@ from app.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(title="Notification Service APIs", version="1.0")
 
 def get_db():
     db = SessionLocal()
