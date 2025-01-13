@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to GHCR
+name: Build, Scan, and Push Docker Image to GHCR
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name : Setup python
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
@@ -34,14 +34,27 @@ jobs:
         pytest --maxfail=1 --disable-warnings || exit 1
 
     - name: Log in to GitHub Container Registry
-      if : success()
+      if: success()
       uses: docker/login-action@v2
       with:
         registry: ghcr.io
         username: ${{ secrets.SCX_GITHUB_USER }}
         password: ${{ secrets.SCX_GITHUB_TOKEN }}
 
-    - name: Build and push Docker image
+    - name: Build Docker image
+      if: success()
+      run: |
+        docker build -t ghcr.io/scholarx-assesment/notification-service:latest .
+
+    - name: Scan Docker image with Trivy
+      if: success()
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        image-ref: ghcr.io/scholarx-assesment/notification-service:latest
+        severity: HIGH,CRITICAL
+
+    - name: Push Docker image
+      if: success()
       uses: docker/build-push-action@v3
       with:
         context: .
